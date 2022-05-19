@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.com.unionsoluciones.apirestservicios.mybatis.mapper.RolMapper">
+
+    <select id="getRoles" resultType="co.com.unionsoluciones.apirestservicios.models.RolModel">
+        select 
+        	crol_rol as rol, 
+        	crol_descripcion as descripcion,  
+        	nrol_empresa as empresa
+        from roles_rol
+    </select>
+    
+    <select id="obtenerRolModConEmp" resultType="co.com.unionsoluciones.apirestservicios.dtos.RolUsuarioDTO" parameterType="co.com.unionsoluciones.apirestservicios.dtos.RolUsuarioDTO">
+		<include refid="obtenerRolModConEmpSelect" />
+		order by nombreEmpresa, nombreModulo
+	</select>
+    
+    
+    <sql id="obtenerRolModConEmpSelect">
+	    select	codigoEmpresa  as codigoEmpresa ,
+			    nombreEmpresa  as nombreEmpresa ,
+			    numeroEmpresa  as numeroEmpresa,
+			    codigoConexion as codigoConexion ,
+			    nombreConexion as nombreConexion ,
+			    codigoModulo   as codigoModulo ,
+			    nombreModulo   as nombreModulo ,
+			    ordenModulo    as ordenModulo ,
+			    codigoRol      as codigoRol ,
+			    llaveRol       as llaveRol,
+			    aliasRol       as aliasRol ,
+			    nombreRol      as nombreRol ,
+			    documento      as documento,
+			    informacion    as informacion ,
+			    estilo         as estilo ,
+			    nombre         as nombre ,
+			    llaveUsuario       as llaveUsuario,
+			    login       as login,
+			    llaveGrupoAcceso as llaveGrupoAcceso,
+			    tipoEtiqueta as tipoEtiqueta,
+			    conexionUrl as conexionUrl
+			from (
+	    select	codigoEmpresa  as codigoEmpresa ,
+			    nombreEmpresa  as nombreEmpresa ,
+			    numeroEmpresa  as numeroEmpresa,
+			    codigoConexion as codigoConexion ,
+			    nombreConexion as nombreConexion ,
+			    codigoModulo   as codigoModulo ,
+			    nombreModulo   as nombreModulo ,
+			    ordenModulo    as ordenModulo ,
+			    codigoRol      as codigoRol ,
+			    llaveRol       as llaveRol,
+			    aliasRol       as aliasRol ,
+			    nombreRol      as nombreRol ,
+			    documento      as documento,
+			    informacion    as informacion ,
+			    estilo         as estilo ,
+			    nombre         as nombre ,
+			    llaveUsuario       as llaveUsuario,
+			    login       as login,
+			    llaveGrupoAcceso as llaveGrupoAcceso,
+			    tipoEtiqueta as tipoEtiqueta,
+			    conexionUrl as conexionUrl
+			 from (
+		select
+		    usg.cusg_empresa      as codigoEmpresa ,
+		    emp.cemp_nombre       as nombreEmpresa ,
+		    emp.nemp_empresa      as numeroEmpresa,
+		    usg.cusg_conexion     as codigoConexion ,
+		    con.ccox_descripcion  as nombreConexion ,
+		    mod.cmod_codigo      as codigoModulo ,
+		    mod.cmod_nombre      as nombreModulo ,
+		    mod.nmod_orden       as ordenModulo ,
+		    usg.cusg_grupo       as codigoRol ,
+		    grp.cgrp_alias       as aliasRol ,
+		    grp.cgrp_llave       as llaveRol ,
+		    grp.cgrp_descripcion as nombreRol ,
+		    usu.cusu_documento    as documento,
+		    grp.cgrp_informacion as informacion ,
+		    emp.cemp_estilo      as estilo ,
+		    usu.cusu_nombre      as nombre ,
+		    usu.cusu_llave       as llaveUsuario,
+		    usu.cusu_login       as login,
+		    usu.cusu_grupoacceso as llaveGrupoAcceso,
+		    emp.cemp_tipoetiqueta as tipoEtiqueta,
+		    con.ccox_conexionurl as conexionUrl
+		from  
+		    usuariogrupow_usg usg,
+		    empresa_empse emp , 
+		    conexion_cox con, 
+		    modulo_mod mod,
+		    grupo_grp grp, 
+		    usuariow_usu usu 
+		where 
+		    emp.cemp_llave      = usg.cusg_empresa 
+		    and usg.cusg_conexion = con.ccox_llave 
+		    and mod.cmod_aplicacion = usg.cusg_aplicacion
+		    and usg.cusg_grupo    = grp.cgrp_llave 
+		    and usg.cusg_usuario  = usu.cusu_llave
+			and usu.cusu_login = #{login}
+			and rtrim(mod.cmod_aplicacion) = #{aplicacion}
+			and usg.cusg_origen = 'UA'
+		<include refid="whereRolModConEmp" />		
+		union
+		select
+		    usg.cusg_empresa      as codigoEmpresa ,
+		    emp.cemp_nombre       as nombreEmpresa ,
+		    emp.nemp_empresa      as numeroEmpresa,
+		    usg.cusg_conexion     as codigoConexion ,
+		    con.ccox_descripcion  as nombreConexion ,
+		    mod.cmod_codigo       as codigoModulo ,
+		    mod.cmod_nombre       as nombreModulo ,
+		    mod.nmod_orden        as ordenModulo ,
+		    usg.cusg_grupo        as codigoRol ,
+		    grp.cgrp_alias        as aliasRol ,
+		    grp.cgrp_llave        as llaveRol ,
+		    grp.cgrp_descripcion  as nombreRol ,
+		    usu.cusu_documento    as documento,
+		    grp.cgrp_informacion  as informacion ,
+		    emp.cemp_estilo       as estilo ,
+		    usu.cusu_nombre       as nombre ,
+		    usu.cusu_llave        as llaveUsuario,
+		    usu.cusu_login        as login,
+		    usu.cusu_grupoacceso  as llaveGrupoAcceso,
+		    emp.cemp_tipoetiqueta as tipoEtiqueta,
+		    con.ccox_conexionurl as conexionUrl
+		from
+		    usuariogrupow_usg usg,
+		    empresa_empse emp ,
+		    conexion_cox con,
+		    modulo_mod mod,
+		    grupo_grp grp,
+		    usuariow_usu usu
+		where
+    		emp.cemp_llave = usg.cusg_empresa
+			and usg.cusg_conexion = con.ccox_llave
+			and mod.cmod_aplicacion = usg.cusg_aplicacion
+			and usg.cusg_grupo = grp.cgrp_llave
+			and usu.cusu_login = #{login}
+			and rtrim(mod.cmod_aplicacion) = #{aplicacion}
+			and cusg_origen = 'GA'
+			and cusg_grupo in (select cusg_grupo 
+			                     from usuariogrupow_usg,usuariow_usu 
+			                     where cusg_usuario = cusu_llave
+                                   and cusg_origen = 'A'
+        						   and cusu_login=#{login})
+		<include refid="whereRolModConEmp" />
+		) xdatobase
+		group by nombreModulo ,
+			    nombreEmpresa ,
+			    nombreRol ,
+			    numeroEmpresa,
+			    nombreConexion ,
+			    codigoEmpresa ,
+			    codigoConexion ,
+			    codigoModulo ,
+			    ordenModulo ,
+			    codigoRol ,
+			    aliasRol ,
+			    llaveRol,
+			    documento,
+			    informacion ,
+			    estilo ,
+			    nombre ,
+			    llaveUsuario,
+			    login,
+			    llaveGrupoAcceso,
+			    tipoEtiqueta,
+			    conexionUrl
+		) xdatobase2	    
+		where exists (select 1
+		               from grupopermiso_gpp, permiso_per
+		              where cgpp_grupo = xdatobase2.llaveRol
+		                and cgpp_permiso = cper_llave
+		                and cper_modulo = xdatobase2.codigoModulo )
+	</sql>	
+	
+	<sql id="whereRolModConEmp">
+		<if test=" busqueda != null"> 
+			and ( upper(cemp_nombre) like upper(#{busqueda}) or
+			  upper(ccox_descripcion) like upper(#{busqueda}) or 
+			  upper(cgrp_descripcion) like upper(#{busqueda}) ) 
+		</if>	
+		<if test=" nombreEmpresa != null"> 
+			and upper(cemp_nombre) like upper(#{nombreEmpresa}) 
+		</if>	
+		<if test=" nombreConexion != null"> 
+			and upper(ccox_descripcion) like upper(#{nombreConexion}) 
+		</if>	
+		<if test=" nombreModulo != null"> 
+			and upper(cmod_nombre) like upper(#{nombreModulo}) 
+		</if>	
+		<if test=" nombreRol != null"> 
+			and upper(cgrp_descripcion) like upper(#{nombreRol}) 
+		</if>	
+		<if test=" codigoModulo != null"> 
+			and cmod_codigo = #{codigoModulo} 
+		</if>	
+		<if test=" codigoEmpresa != null"> 
+			and cusg_empresa= #{codigoEmpresa} 
+		</if>
+		<if test=" codigoConexion != null"> 
+			and cusg_conexion= #{codigoConexion} 
+		</if>
+		<if test=" codigoRol != null"> 
+			and cusg_grupo= #{codigoRol} 
+		</if>
+		<if test=' portal == "Si"'> 
+		    and cemp_sitio in ( select csti_llave 
+		                      from sitio_stip
+		                     where csti_codigo is not null)
+		</if>
+		<if test=" aplicacion == '5'"> 
+			and cusg_conexion in ( select ccox_llave from conexion_cox where ccox_conexionurl like '%SeguridadDS%')
+		</if>	
+	</sql>
+
+</mapper>
